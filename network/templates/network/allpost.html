@@ -1,0 +1,27 @@
+{% extends "network/layout.html" %}
+{% block body %}
+<script type="text/javascript">
+    async function loadcount(spostid)
+    {
+        const s_url='/postlike/'+spostid;
+        let response =await fetch(s_url);
+        let data =await response.json(); 
+    }
+    
+
+</script>
+<h2>All Post</h2>
+<table class="table">
+<tbody>
+{% for spost in postlists %}
+    <div class="border">
+        <div><h4 style="color:blue">{{spost.spostuser}}</h4></div>        
+        <div>{{spost.spostinfo}}</div>
+        <div><a href={% url 'index' %}>Edit</a></div>
+        <div>{{spost.sposttime}}</div>
+        <a href="" onclick="loadcount({{spost.id}})"><span class="glyphicon glyphicon-heart icon-red" value="{{spost.id}}"></span></a> 
+        <lable id="lbllike">{{spost.spostlike}}</lable>
+    </div>
+{% endfor %}
+</tbody>
+{% endblock %}
