@@ -1,9 +1,11 @@
+from os import supports_dir_fd
+from typing import SupportsIndex
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
-from .models import User,PostInfo
+from .models import PostLike, User,PostInfo
 
 
 def index(request):
@@ -21,13 +23,22 @@ def index(request):
         return login_view(request)
 
 
-def getpostlike(request,postid):
-    spostinfo=PostInfo.objects.get(id=postid)
-    icount=spostinfo.spostlike+1
+def countpostlike(request,postid):
+    mpostid=PostInfo(postid)
+
+    spostlike=PostLike()
+    spostlike.spostid=mpostid
+    spostlike.slikeuser=User(request.user.id)
+    spostlike.save()
+
+    icount = PostLike.objects.filter(spostid=mpostid).count()
+
+    mpostInfo=PostInfo.objects.get(id=postid)
+    mpostInfo.spostlike=icount
+    mpostInfo.save()
+
     print(f"Count {icount}")
-    spostinfo.spostlike=icount
-    spostinfo.save()
-    return HttpResponse(status=200)
+    return JsonResponse({"likecount": icount}, status=200)
 
 def allpost(request):
     spostinfo=PostInfo.objects.all()

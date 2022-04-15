@@ -1,14 +1,21 @@
 {% extends "network/layout.html" %}
 {% block body %}
 <script type="text/javascript">
-    async function loadcount(spostid)
+
+    async function loadcount2(spostid)
     {
         const s_url='/postlike/'+spostid;
         let response =await fetch(s_url);
         let data =await response.json(); 
+        console.log(data['likecount'])
     }
-    
-
+    function loadcount(spostid)
+    {
+        const s_url='/postlike/'+spostid;
+        let response =fetch(s_url);
+        let data =response.json(); 
+        console.log(data['likecount'])
+    }
 </script>
 <h2>All Post</h2>
 <table class="table">
